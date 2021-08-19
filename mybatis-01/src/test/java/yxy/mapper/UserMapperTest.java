@@ -6,6 +6,7 @@ import org.junit.Test;
 import yxy.model.SysRole;
 import yxy.model.SysUser;
 
+import java.util.Date;
 import java.util.List;
 
 public class UserMapperTest extends BaseMapperTest{
@@ -50,12 +51,26 @@ public class UserMapperTest extends BaseMapperTest{
         }
     }
 
-    private void printUserList(List<SysUser> userList){
-        for (SysUser user: userList){
-            System.out.printf("%-10d%-10s%-10s\n",
-                    user.getId(),
-                    user.getUserName(),
-                    user.getUserPassword());
+    @Test
+    public void testInsert(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+
+            SysUser user = new SysUser();
+            user.setUserName("test1");
+            user.setUserPassword("1234321");
+            user.setUserEmail("test@test.com");
+            user.setUserInfo("test info");
+            user.setHeadImg(new byte[]{1,2,3,4});
+            user.setCreateTime(new Date());
+            int result = userMapper.insert(user);
+            Assert.assertEquals(1, result);
+            Assert.assertNull(user.getId());
+        }finally {
+            sqlSession.rollback();
+            sqlSession.close();
         }
     }
+
 }
