@@ -1,9 +1,10 @@
 package yxy.mapper;
 
-import yxy.pojo.User;
+import yxy.model.SysUser;
 
 import java.util.List;
 
 public interface UserMapper {
-    List<User> getUserList();
+    SysUser selectById(Long id);
+    List<SysUser> selectAll();
 }

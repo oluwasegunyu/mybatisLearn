@@ -1,23 +1,47 @@
 package yxy.mapper;
 
 import org.apache.ibatis.session.SqlSession;
+import org.junit.Assert;
 import org.junit.Test;
-import yxy.pojo.User;
-import yxy.utils.MybatisUtils;
+import yxy.model.SysUser;
 
 import java.util.List;
 
-public class UserMapperTest {
+public class UserMapperTest extends BaseMapperTest{
     @Test
-    public void test(){
-        SqlSession sqlSession = MybatisUtils.getSqlSession();
-        UserMapper mapper = sqlSession.getMapper(UserMapper.class);
-        List<User> userList = mapper.getUserList();
-
-        for (User user : userList) {
-            System.out.println(user);
+    public void testSelectById(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            SysUser user = userMapper.selectById(1l);
+            Assert.assertNotNull(user);
+            Assert.assertEquals("admin", user.getUserName());
+        }finally {
+            sqlSession.close();
         }
+    }
 
-        sqlSession.close();
+
+
+    @Test
+    public void testSelectAll(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            List<SysUser> userList = userMapper.selectAll();
+            Assert.assertNotNull(userList);
+            Assert.assertTrue(userList.size()>0);
+        }finally {
+            sqlSession.close();
+        }
+    }
+
+    private void printUserList(List<SysUser> userList){
+        for (SysUser user: userList){
+            System.out.printf("%-10d%-10s%-10s\n",
+                    user.getId(),
+                    user.getUserName(),
+                    user.getUserPassword());
+        }
     }
 }

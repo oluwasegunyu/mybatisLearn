@@ -1,4 +1,4 @@
-package yxy.pojo;
+package yxy.model;
 
 public class User {
     private int id;
