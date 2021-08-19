@@ -119,4 +119,57 @@ public class UserMapperTest extends BaseMapperTest{
         }
     }
 
+    @Test
+    public void testUpdateById(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            SysUser user = userMapper.selectById(1L);
+            Assert.assertEquals("admin", user.getUserName());
+            user.setUserName("admin_test");
+            user.setUserEmail("test@testtest.com");
+            int result = userMapper.updateById(user);
+            Assert.assertEquals(1, result);
+            user = userMapper.selectById(1l);
+            Assert.assertEquals("admin_test", user.getUserName());
+        }finally {
+            sqlSession.rollback();
+            sqlSession.close();
+        }
+    }
+
+    @Test
+    public void testDeleteById(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            SysUser user1 = userMapper.selectById(1l);
+            Assert.assertNotNull(user1);
+            Assert.assertEquals(1, userMapper.deleteById(user1));
+            Assert.assertNull(userMapper.selectById(1L));
+
+            SysUser user2 = userMapper.selectById(1001L);
+            Assert.assertNotNull(user2);
+            Assert.assertEquals(1, userMapper.deleteById(user2));
+            Assert.assertEquals(0, userMapper.deleteById(user2));
+        }finally {
+            sqlSession.rollback();
+            sqlSession.close();
+        }
+    }
+
+
+    @Test
+    public void testSelectRolesByUserIdAndRoleEnabled(){
+        SqlSession sqlSession = getSqlSession();
+        try{
+            UserMapper userMapper = sqlSession.getMapper(UserMapper.class);
+            List<SysRole> userList = userMapper.selectRolesByUserIdAndRoleEnabled(1L, 1);
+            Assert.assertNotNull(userList);
+            Assert.assertTrue(userList.size()>0);
+        }finally {
+            sqlSession.close();
+        }
+    }
+
 }
